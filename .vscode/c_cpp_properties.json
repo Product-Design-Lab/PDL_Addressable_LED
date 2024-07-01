@@ -1,6 +1,29 @@
 {
     "configurations": [
         {
+            "name": "ubuntu",
+            "includePath": [
+                "${workspaceFolder}/../**",
+                "${HOME}/.arduino15/packages/Seeeduino/tools/CMSIS/5.7.0/CMSIS/Core/Include/",
+                "${HOME}/.arduino15/packages/Seeeduino/hardware/nrf52/*/cores/nRF5/*",
+                "${HOME}/.arduino15/packages/Seeeduino/hardware/nrf52/*/cores/nRF5/freertos/config/",
+                "${HOME}/.arduino15/packages/Seeeduino/hardware/nrf52/*/cores/nRF5/freertos/Source/include/",
+                "${HOME}/.arduino15/packages/Seeeduino/hardware/nrf52/*/cores/nRF5/freertos/Source/portable/**",
+                "${HOME}/.arduino15/packages/Seeeduino/hardware/nrf52/*/cores/nRF5/nordic/**",
+                "${HOME}/.arduino15/packages/Seeeduino/hardware/nrf52/*/cores/nRF5/avr/*",
+                "${HOME}/.arduino15/packages/Seeeduino/hardware/nrf52/*/cores/nRF5/utility/*",
+                "${HOME}/.arduino15/packages/Seeeduino/hardware/nrf52/*/variants/Seeed_XIAO_nRF52840_Sense/*",
+                "${HOME}/.arduino15/packages/Seeeduino/hardware/nrf52/*/libraries/**",
+                "${HOME}/.arduino15/packages/Seeeduino/tools/arm-none-eabi-gcc/9-2019q4/arm-none-eabi/include/**",
+                "${HOME}/.arduino15/packages/Seeeduino/tools/CMSIS/5.7.0/CMSIS/DSP/Include/"
+            ],
+            "defines": [],
+            "intelliSenseMode": "linux-gcc-arm",
+            "cStandard": "c11",
+            "cppStandard": "c++11",
+            "compilerPath": "${HOME}/.arduino15/packages/Seeeduino/tools/arm-none-eabi-gcc/9-2019q4/bin/arm-none-eabi-g++"
+        },
+        {
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/../**",
