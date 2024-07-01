@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/../**",
+                "${env.USERPROFILE}/AppData/Local/Arduino15/packages/Seeeduino/tools/CMSIS/5.7.0/CMSIS/Core/Include/",
+                "${env.USERPROFILE}/AppData/Local/Arduino15/packages/Seeeduino/hardware/nrf52/*/cores/nRF5/*",
+                "${env.USERPROFILE}/AppData/Local/Arduino15/packages/Seeeduino/hardware/nrf52/*/cores/nRF5/freertos/config/",
+                "${env.USERPROFILE}/AppData/Local/Arduino15/packages/Seeeduino/hardware/nrf52/*/cores/nRF5/freertos/Source/include/",
+                "${env.USERPROFILE}/AppData/Local/Arduino15/packages/Seeeduino/hardware/nrf52/*/cores/nRF5/freertos/Source/portable/**",
+                "${env.USERPROFILE}/AppData/Local/Arduino15/packages/Seeeduino/hardware/nrf52/*/cores/nRF5/nordic/**",
+                "${env.USERPROFILE}/AppData/Local/Arduino15/packages/Seeeduino/hardware/nrf52/*/cores/nRF5/avr/*",
+                "${env.USERPROFILE}/AppData/Local/Arduino15/packages/Seeeduino/hardware/nrf52/*/cores/nRF5/utility/*",
+                "${env.USERPROFILE}/AppData/Local/Arduino15/packages/Seeeduino/hardware/nrf52/*/variants/Seeed_XIAO_nRF52840_Sense/*",
+                "${env.USERPROFILE}/AppData/Local/Arduino15/packages/Seeeduino/hardware/nrf52/*/libraries/**",
+                "${env.USERPROFILE}/AppData/Local/Arduino15/packages/Seeeduino/tools/arm-none-eabi-gcc/9-2019q4/arm-none-eabi/include/**",
+                "${env.USERPROFILE}/AppData/Local/Arduino15/packages/Seeeduino/tools/CMSIS/5.7.0/CMSIS/DSP/Include/"
+            ],
+            "defines": [],
+            "intelliSenseMode": "windows-gcc-arm",
+            "cStandard": "c11",
+            "cppStandard": "c++11",
+            "compilerPath": "${env.USERPROFILE}/AppData/Local/Arduino15/packages/Seeeduino/tools/arm-none-eabi-gcc/9-2019q4/bin/arm-none-eabi-g++"
+        }
+    ],
+    "version": 4
+}
