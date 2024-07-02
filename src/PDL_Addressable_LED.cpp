@@ -7,22 +7,44 @@
 
 // LED Patterns
 const PDL_Addressable_LED::single_color_pattern_t PDL_Addressable_LED::PATTERN_OFF = {
-    .r = 0, .g = 0, .b = 0, .w = 0, .index = 0, .count_mid = 0, .count_dim_left = 0, .count_dim_right = 0, .fade_interval_ms = 0, .fade_step = 0, .marquee_interval_ms = 0, .marquee_dir = static_cast<int8_t>(Marquee_t::OFF)};
-
-const PDL_Addressable_LED::single_color_pattern_t PDL_Addressable_LED::PATTERN_GREEN_CONST_ALL = {
-    .r = 0, .g = 255, .b = 0, .w = 0, .index = 0, .count_mid = 255, .count_dim_left = 0, .count_dim_right = 0, .fade_interval_ms = 0, .fade_step = 0, .marquee_interval_ms = 0, .marquee_dir = static_cast<int8_t>(Marquee_t::OFF)};
-
-const PDL_Addressable_LED::single_color_pattern_t PDL_Addressable_LED::PATTERN_ORANGE_DIM_DEFAULT_INDEX = {
-    .r = 255,
+    .r = 0,
     .g = 0,
     .b = 0,
     .w = 0,
-    .index = 3,
+    .index = 0,
+    .count_mid = 0,
+    .count_dim_left = 0,
+    .count_dim_right = 0,
+    .fade_interval_ms = 0,
+    .fade_step = 0,
+    .marquee_interval_ms = 0,
+    .marquee_dir = static_cast<int8_t>(Marquee_t::OFF)};
+
+const PDL_Addressable_LED::single_color_pattern_t PDL_Addressable_LED::PATTERN_GREEN_CONST_ALL = {
+    .r = 0,
+    .g = 255,
+    .b = 0,
+    .w = 0,
+    .index = 0,
+    .count_mid = 255,
+    .count_dim_left = 0,
+    .count_dim_right = 0,
+    .fade_interval_ms = 0,
+    .fade_step = 0,
+    .marquee_interval_ms = 0,
+    .marquee_dir = static_cast<int8_t>(Marquee_t::OFF)};
+
+const PDL_Addressable_LED::single_color_pattern_t PDL_Addressable_LED::PATTERN_ORANGE_DIM_DEFAULT_INDEX = {
+    .r = 255,
+    .g = 165,
+    .b = 0,
+    .w = 0,
+    .index = 4,
     .count_mid = 1,
     .count_dim_left = 2,
     .count_dim_right = 2,
     .fade_interval_ms = 50,
-    .fade_step = 10,
+    .fade_step = 20,
     .marquee_interval_ms = 0,
     .marquee_dir = static_cast<int8_t>(Marquee_t::OFF)};
 
@@ -41,7 +63,18 @@ const PDL_Addressable_LED::single_color_pattern_t PDL_Addressable_LED::PATTERN_R
     .marquee_dir = static_cast<int8_t>(Marquee_t::OFF)};
 
 const PDL_Addressable_LED::single_color_pattern_t PDL_Addressable_LED::PATTERN_GREEN_MARQUEE_CIRCULAR = {
-    .r = 0, .g = 255, .b = 0, .w = 0, .index = 0, .count_mid = 1, .count_dim_left = 1, .count_dim_right = 1, .fade_interval_ms = 0, .fade_step = 0, .marquee_interval_ms = 100, .marquee_dir = static_cast<int8_t>(Marquee_t::CIRCULAR_RIGHT)};
+    .r = 0,
+    .g = 255,
+    .b = 0,
+    .w = 0,
+    .index = 1,
+    .count_mid = 1,
+    .count_dim_left = 1,
+    .count_dim_right = 1,
+    .fade_interval_ms = 0,
+    .fade_step = 0,
+    .marquee_interval_ms = 100,
+    .marquee_dir = static_cast<int8_t>(Marquee_t::CIRCULAR_RIGHT)};
 
 // Constructor
 PDL_Addressable_LED::PDL_Addressable_LED(Adafruit_NeoPixel &neoPixel)
@@ -145,54 +178,85 @@ void PDL_Addressable_LED::_patternLoop()
         if (xQueueReceive(xQueue, &receivedPattern, 0) == pdPASS)
         {
             _patternInit(receivedPattern);
-            debugPrintf("New pattern received\n");
+            // debugPrintf("New pattern received\n");
             // printPattern(receivedPattern);
         }
 
         // Handle fading
-        if (current_pattern.fade_interval_ms && current_pattern.fade_step &&
-            xLastWakeTime - fadeLastRunTime >= pdMS_TO_TICKS(current_pattern.fade_interval_ms))
+        if (current_pattern.fade_interval_ms && current_pattern.fade_step)
         {
-            fadeLastRunTime = xTaskGetTickCount();
-            fadeCurrentStep = (fadeCurrentStep + 1) % (current_pattern.fade_step * 2);
-            fade_factor = abs(fadeCurrentStep - current_pattern.fade_step) / static_cast<float>(current_pattern.fade_step);
-            // debugPrintf("Fade triggered: factor: %f\n", fade_factor);
+            if (xLastWakeTime - fadeLastRunTime >= pdMS_TO_TICKS(current_pattern.fade_interval_ms))
+            {
+                fadeLastRunTime = xTaskGetTickCount();
+                fadeCurrentStep = (fadeCurrentStep + 1) % (current_pattern.fade_step * 2);
+                fade_factor = abs(fadeCurrentStep - current_pattern.fade_step) / static_cast<float>(current_pattern.fade_step);
+                // debugPrintf("Fade triggered: factor: %f\n", fade_factor);
+            }
+        }
+        else
+        {
+            fade_factor = 1.0f;
         }
 
         // Handle marquee
-        if (current_pattern.marquee_interval_ms && current_pattern.marquee_dir != static_cast<int8_t>(Marquee_t::OFF) &&
-            xLastWakeTime - marqueeLastRunTime >= pdMS_TO_TICKS(current_pattern.marquee_interval_ms))
+        if (current_pattern.marquee_dir != static_cast<int8_t>(Marquee_t::OFF))
         {
-            marqueeLastRunTime = xTaskGetTickCount();
-            switch (static_cast<Marquee_t>(current_pattern.marquee_dir))
+            if (current_pattern.marquee_interval_ms &&
+                xLastWakeTime - marqueeLastRunTime >= pdMS_TO_TICKS(current_pattern.marquee_interval_ms))
             {
-            case Marquee_t::CIRCULAR_RIGHT:
-                left_shift_count = (left_shift_count + 1) % led_count;
-                break;
-            case Marquee_t::CIRCULAR_LEFT:
-                left_shift_count = (left_shift_count - 1) % led_count;
-                break;
-            case Marquee_t::BACKFORTH_RIGHT:
-                marqueeCurrentStep = (marqueeCurrentStep + 1) % (2 * led_count);
-                left_shift_count = marqueeCurrentStep - led_count;
-                break;
-            case Marquee_t::BACKFORTH_LEFT:
-                marqueeCurrentStep = (marqueeCurrentStep - 1) % (2 * led_count);
-                left_shift_count = marqueeCurrentStep - led_count;
-                break;
-            default:
-                break;
+                marqueeLastRunTime = xTaskGetTickCount();
+                switch (static_cast<Marquee_t>(current_pattern.marquee_dir))
+                {
+                case Marquee_t::CIRCULAR_RIGHT:
+                    left_shift_count = (left_shift_count + 1) % led_count;
+                    break;
+                case Marquee_t::CIRCULAR_LEFT:
+                    left_shift_count = (left_shift_count - 1) % led_count;
+                    break;
+                case Marquee_t::BACKFORTH_RIGHT:
+                    marqueeCurrentStep = (marqueeCurrentStep + 1) % (2 * led_count);
+                    left_shift_count = marqueeCurrentStep - led_count;
+                    break;
+                case Marquee_t::BACKFORTH_LEFT:
+                    marqueeCurrentStep = (marqueeCurrentStep - 1) % (2 * led_count);
+                    left_shift_count = marqueeCurrentStep - led_count;
+                    break;
+                default:
+                    break;
+                }
+                // debugPrintf("Marquee triggered: left_shift_count: %d\n", left_shift_count);
             }
-            debugPrintf("Marquee triggered: left_shift_count: %d\n", left_shift_count);
+        }
+        else
+        {
+            left_shift_count = 0;
         }
 
         _patternShow(left_shift_count, fade_factor);
 
         // Calculate wait time
-        TickType_t fadeTimeLeft = current_pattern.fade_interval_ms == 0 ? 50 : pdMS_TO_TICKS(current_pattern.fade_interval_ms) - (xLastWakeTime - fadeLastRunTime);
-        TickType_t marqueeTimeLeft = current_pattern.marquee_interval_ms == 0 ? 50 : pdMS_TO_TICKS(current_pattern.marquee_interval_ms) - (xLastWakeTime - marqueeLastRunTime);
-        waitTime = min(fadeTimeLeft, marqueeTimeLeft);
-        // debugPrintf("waitTime: %d, fadeTimeLeft: %d, marqueeTimeLeft: %d\n", waitTime, fadeTimeLeft, marqueeTimeLeft);
+        if (current_pattern.fade_interval_ms == 0 && current_pattern.marquee_interval_ms == 0)
+        {
+            waitTime = pdMS_TO_TICKS(200);
+            // debugPrintf("waitTime(both off): %d\n", waitTime);
+        }
+        else if (current_pattern.fade_interval_ms == 0)
+        {
+            waitTime = pdMS_TO_TICKS(current_pattern.marquee_interval_ms) - (xLastWakeTime - marqueeLastRunTime);
+            // debugPrintf("waitTime(fade off): %d\n", waitTime);
+        }
+        else if (current_pattern.marquee_interval_ms == 0)
+        {
+            waitTime = pdMS_TO_TICKS(current_pattern.fade_interval_ms) - (xLastWakeTime - fadeLastRunTime);
+            // debugPrintf("waitTime(marquee off): %d\n", waitTime);
+        }
+        else
+        {
+            TickType_t fadeTimeLeft = pdMS_TO_TICKS(current_pattern.fade_interval_ms) - (xLastWakeTime - fadeLastRunTime);
+            TickType_t marqueeTimeLeft = pdMS_TO_TICKS(current_pattern.marquee_interval_ms) - (xLastWakeTime - marqueeLastRunTime);
+            waitTime = min(fadeTimeLeft, marqueeTimeLeft);
+            // debugPrintf("waitTime: %d, fadeTimeLeft: %d, marqueeTimeLeft: %d\n", waitTime, fadeTimeLeft, marqueeTimeLeft);
+        }
 
         vTaskDelayUntil(&xLastWakeTime, waitTime);
     }
@@ -207,7 +271,7 @@ void PDL_Addressable_LED::_PatternFillColor(const Color c, int uLeft, int uRight
     uRight = (uRight + led_count) % led_count;
     int range = (uRight - uLeft + led_count) % led_count;
 
-    debugPrintf("_PatternFillColor, uLeft: %d, uRight: %d\n", uLeft, uRight);
+    // debugPrintf("_PatternFillColor, uLeft: %d, uRight: %d\n", uLeft, uRight);
 
     for (int i = 0; i <= range; i++)
     {
@@ -221,11 +285,7 @@ void PDL_Addressable_LED::_PatternApplyTransition(const Color cLeft, const Color
     uRight = (uRight + led_count) % led_count;
 
     int range = (uRight - uLeft + led_count) % led_count;
-
-    if (range == 0)
-    {
-        return;
-    }
+    // debugPrintf("_PatternApplyTransition, uLeft: %d, uRight: %d, range: %d\n", uLeft, uRight, range);
 
     int extendedRange = range + (int)extendLeft + (int)extendRight;
     int rStep = (cRight.channel.r - cLeft.channel.r) / extendedRange;
@@ -233,7 +293,7 @@ void PDL_Addressable_LED::_PatternApplyTransition(const Color cLeft, const Color
     int bStep = (cRight.channel.b - cLeft.channel.b) / extendedRange;
     int wStep = (cRight.channel.w - cLeft.channel.w) / extendedRange;
     // print rStep and range
-    debugPrintf("_PatternApplyTransition, rStep: %d, uLeft: %d, uRight: %d, range: %d, extendedRange: %d\n", rStep, uLeft, uRight, range, extendedRange);
+    // debugPrintf("_PatternApplyTransition, rStep: %d, uLeft: %d, uRight: %d, range: %d, extendedRange: %d\n", rStep, uLeft, uRight, range, extendedRange);
 
     // determine loop dir based on signness of range
     for (int i = 0; i <= range; i++)
@@ -257,23 +317,24 @@ void PDL_Addressable_LED::_patternInit(const single_color_pattern_t &pattern)
     if (pattern.index != 255)
     {
         center_led_index = pattern.index;
+        debugPrintf("_patternInit, pattern index = %d, set to %d\n", pattern.index, center_led_index);
     }
 
     Color mainColor(pattern.r, pattern.g, pattern.b, pattern.w);
     Color off(0, 0, 0, 0);
     // find leftMostIndex
-    int leftMostIndex = center_led_index - pattern.count_dim_left; // allow the most left LED to also be lit
-    int midStartIndex = center_led_index;
-    int midEndIndex = center_led_index + pattern.count_mid - 1;
-    int rightMostIndex = midEndIndex + pattern.count_dim_right;
+    int leftMostIndex = (center_led_index - pattern.count_dim_left + led_count) % led_count;
+    int midStartIndex = (center_led_index + led_count) % led_count;
+    int midEndIndex = (center_led_index + pattern.count_mid + led_count - 1) % led_count;
+    int rightMostIndex = (midEndIndex + pattern.count_dim_right + led_count) % led_count;
 
     // if marquee back and forth, dont wrap color to the other side
-    if (pattern.marquee_dir == static_cast<int8_t>(Marquee_t::BACKFORTH_LEFT) ||
-        pattern.marquee_dir == static_cast<int8_t>(Marquee_t::BACKFORTH_RIGHT))
-    {
-        leftMostIndex = max(leftMostIndex, 0);
-        rightMostIndex = min(rightMostIndex, led_count - 1);
-    }
+    // if (pattern.marquee_dir == static_cast<int8_t>(Marquee_t::BACKFORTH_LEFT) ||
+    //     pattern.marquee_dir == static_cast<int8_t>(Marquee_t::BACKFORTH_RIGHT))
+    // {
+    //     leftMostIndex = max(leftMostIndex, 0);
+    //     rightMostIndex = min(rightMostIndex, led_count - 1);
+    // }
 
     debugPrintf("leftMostIndex: %d, midStartIndex: %d, midEndIndex: %d, rightMostIndex: %d\n", leftMostIndex, midStartIndex, midEndIndex, rightMostIndex);
 
@@ -304,7 +365,7 @@ void PDL_Addressable_LED::_patternInit(const single_color_pattern_t &pattern)
 // Display pattern with shift and fade effects
 void PDL_Addressable_LED::_patternShow(int left_shift_count, float fade_factor)
 {
-    // static char buffer[128];
+    // debugPrintf("_patternShow, Shift: %d, Fade: %0.2f\n", left_shift_count, fade_factor);
     for (int i = 0; i < led_count; i++)
     {
         uint8_t running_index = (i - left_shift_count + led_count) % led_count;
@@ -312,13 +373,10 @@ void PDL_Addressable_LED::_patternShow(int left_shift_count, float fade_factor)
         uint8_t g = neoPixel.gamma8((color[running_index].channel.g * fade_factor));
         uint8_t b = neoPixel.gamma8((color[running_index].channel.b * fade_factor));
         uint8_t w = neoPixel.gamma8((color[running_index].channel.w * fade_factor));
-        // print dimmed color
-        // debugPrintf("Dimmed Color: i:%d, fade_factor:%0.2f, r:%d, g:%d, b:%d\n", i, fade_factor, r, g, b);
         neoPixel.setPixelColor(i, r, g, b, w);
+        debugPrintf("|%08X", neoPixel.getPixelColor(i));
     }
-
-    // debugPrintf("Shift: %d, %04X|%04X|%04X|%04X|%04X|%04X|%04X|%04X\n", left_shift_count, neoPixel.getPixelColor(0), neoPixel.getPixelColor(1), neoPixel.getPixelColor(2), neoPixel.getPixelColor(3), neoPixel.getPixelColor(4), neoPixel.getPixelColor(5), neoPixel.getPixelColor(6), neoPixel.getPixelColor(7));
-    // debugPrintf("\n");
+    debugPrintf("\n");
 
     neoPixel.show();
 }
