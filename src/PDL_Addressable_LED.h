@@ -63,6 +63,7 @@ public:
     bool deinit();
 
     bool setPatternSingleColor(const single_color_pattern_t &pattern);
+    void setCenterLedIndex(uint8_t index);
 
     void setDebug(uint8_t debug);
 

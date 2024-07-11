@@ -237,6 +237,13 @@ bool PDL_Addressable_LED::setPatternSingleColor(const single_color_pattern_t &pa
     return true;
 }
 
+// Set center led index
+void PDL_Addressable_LED::setCenterLedIndex(uint8_t index)
+{
+    if (index < led_count)
+        center_led_index = index;
+}
+
 // Task wrapper
 void PDL_Addressable_LED::_task_wrapper(void *pvParameters)
 {
@@ -316,7 +323,7 @@ void PDL_Addressable_LED::_patternLoop()
             left_shift_count = 0;
         }
 
-        _patternShow(left_shift_count, fade_factor);
+        _patternShow(left_shift_count + center_led_index, fade_factor);
 
         // Calculate wait time
         if (current_pattern.fade_interval_ms == 0 && current_pattern.marquee_interval_ms == 0)
