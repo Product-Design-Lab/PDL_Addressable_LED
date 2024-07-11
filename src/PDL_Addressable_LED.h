@@ -45,9 +45,15 @@ public:
 
     // Predefined patterns
     static const single_color_pattern_t PATTERN_OFF;
+    static const single_color_pattern_t PATTERN_RED_CONST_ALL;
+    static const single_color_pattern_t PATTERN_BLUE_CONST_ALL;
     static const single_color_pattern_t PATTERN_GREEN_CONST_ALL;
     static const single_color_pattern_t PATTERN_ORANGE_DIM_DEFAULT_INDEX;
     static const single_color_pattern_t PATTERN_RED_FADE_ALL;
+    static const single_color_pattern_t PATTERN_BLUE_FADE_ALL;  
+    static const single_color_pattern_t PATTERN_GREEN_FADE_ALL;
+    static const single_color_pattern_t PATTERN_RED_MARQUEE_CIRCULAR;
+    static const single_color_pattern_t PATTERN_BLUE_MARQUEE_CIRCULAR;
     static const single_color_pattern_t PATTERN_GREEN_MARQUEE_CIRCULAR;
 
     PDL_Addressable_LED(Adafruit_NeoPixel &neoPixel);

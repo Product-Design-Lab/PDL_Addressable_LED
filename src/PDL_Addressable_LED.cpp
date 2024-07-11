@@ -20,6 +20,34 @@ const PDL_Addressable_LED::single_color_pattern_t PDL_Addressable_LED::PATTERN_O
     .marquee_interval_ms = 0,
     .marquee_dir = static_cast<int8_t>(Marquee_t::OFF)};
 
+const PDL_Addressable_LED::single_color_pattern_t PDL_Addressable_LED::PATTERN_RED_CONST_ALL = {
+    .r = 255,
+    .g = 0,
+    .b = 0,
+    .w = 0,
+    .index = 0,
+    .count_mid = 255,
+    .count_dim_left = 0,
+    .count_dim_right = 0,
+    .fade_interval_ms = 0,
+    .fade_step = 0,
+    .marquee_interval_ms = 0,
+    .marquee_dir = static_cast<int8_t>(Marquee_t::OFF)};
+
+const PDL_Addressable_LED::single_color_pattern_t PDL_Addressable_LED::PATTERN_BLUE_CONST_ALL = {
+    .r = 0,
+    .g = 0,
+    .b = 255,
+    .w = 0,
+    .index = 0,
+    .count_mid = 255,
+    .count_dim_left = 0,
+    .count_dim_right = 0,
+    .fade_interval_ms = 0,
+    .fade_step = 0,
+    .marquee_interval_ms = 0,
+    .marquee_dir = static_cast<int8_t>(Marquee_t::OFF)};
+
 const PDL_Addressable_LED::single_color_pattern_t PDL_Addressable_LED::PATTERN_GREEN_CONST_ALL = {
     .r = 0,
     .g = 255,
@@ -61,6 +89,62 @@ const PDL_Addressable_LED::single_color_pattern_t PDL_Addressable_LED::PATTERN_R
     .fade_step = 10,
     .marquee_interval_ms = 0,
     .marquee_dir = static_cast<int8_t>(Marquee_t::OFF)};
+
+const PDL_Addressable_LED::single_color_pattern_t PDL_Addressable_LED::PATTERN_BLUE_FADE_ALL = {
+    .r = 0,
+    .g = 0,
+    .b = 255,
+    .w = 0,
+    .index = 0,
+    .count_mid = 255,
+    .count_dim_left = 0,
+    .count_dim_right = 0,
+    .fade_interval_ms = 25,
+    .fade_step = 10,
+    .marquee_interval_ms = 0,
+    .marquee_dir = static_cast<int8_t>(Marquee_t::OFF)};
+
+const PDL_Addressable_LED::single_color_pattern_t PDL_Addressable_LED::PATTERN_GREEN_FADE_ALL = {
+    .r = 0,
+    .g = 255,
+    .b = 0,
+    .w = 0,
+    .index = 0,
+    .count_mid = 255,
+    .count_dim_left = 0,
+    .count_dim_right = 0,
+    .fade_interval_ms = 25,
+    .fade_step = 10,
+    .marquee_interval_ms = 0,
+    .marquee_dir = static_cast<int8_t>(Marquee_t::OFF)};
+
+const PDL_Addressable_LED::single_color_pattern_t PDL_Addressable_LED::PATTERN_RED_MARQUEE_CIRCULAR = {
+    .r = 255,
+    .g = 0,
+    .b = 0,
+    .w = 0,
+    .index = 1,
+    .count_mid = 1,
+    .count_dim_left = 1,
+    .count_dim_right = 1,
+    .fade_interval_ms = 0,
+    .fade_step = 0,
+    .marquee_interval_ms = 100,
+    .marquee_dir = static_cast<int8_t>(Marquee_t::CIRCULAR_RIGHT)};
+
+const PDL_Addressable_LED::single_color_pattern_t PDL_Addressable_LED::PATTERN_BLUE_MARQUEE_CIRCULAR = {
+    .r = 0,
+    .g = 0,
+    .b = 255,
+    .w = 0,
+    .index = 1,
+    .count_mid = 1,
+    .count_dim_left = 1,
+    .count_dim_right = 1,
+    .fade_interval_ms = 0,
+    .fade_step = 0,
+    .marquee_interval_ms = 100,
+    .marquee_dir = static_cast<int8_t>(Marquee_t::CIRCULAR_RIGHT)};
 
 const PDL_Addressable_LED::single_color_pattern_t PDL_Addressable_LED::PATTERN_GREEN_MARQUEE_CIRCULAR = {
     .r = 0,

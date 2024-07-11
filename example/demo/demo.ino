@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <PDL_Addressable_LED.h>
 
-#define NUM_LED 8
+#define NUM_LED 12
 #define PIN_NEOPIXEL_LED 10
 
 Adafruit_NeoPixel strip(NUM_LED, PIN_NEOPIXEL_LED, NEO_GRB + NEO_KHZ800);
@@ -20,12 +20,26 @@ void setup() {
 void loop() {
   led_strip.setPatternSingleColor(PDL_Addressable_LED::PATTERN_OFF);
   delay(1000);
+  led_strip.setPatternSingleColor(PDL_Addressable_LED::PATTERN_RED_CONST_ALL);
+  delay(1000);
   led_strip.setPatternSingleColor(PDL_Addressable_LED::PATTERN_GREEN_CONST_ALL);
-  delay(5000);
+  delay(1000);
+  led_strip.setPatternSingleColor(PDL_Addressable_LED::PATTERN_BLUE_CONST_ALL);
+  delay(1000);
+  led_strip.setPatternSingleColor(PDL_Addressable_LED::PATTERN_RED_FADE_ALL);
+  delay(3000);
+  led_strip.setPatternSingleColor(PDL_Addressable_LED::PATTERN_GREEN_FADE_ALL);
+  delay(3000);
+  led_strip.setPatternSingleColor(PDL_Addressable_LED::PATTERN_BLUE_FADE_ALL);
+  delay(3000);
+  led_strip.setPatternSingleColor(PDL_Addressable_LED::PATTERN_RED_MARQUEE_CIRCULAR);
+  delay(3000);
+  led_strip.setPatternSingleColor(PDL_Addressable_LED::PATTERN_GREEN_MARQUEE_CIRCULAR);
+  delay(3000);
+  led_strip.setPatternSingleColor(PDL_Addressable_LED::PATTERN_BLUE_MARQUEE_CIRCULAR);
+  delay(3000);
   led_strip.setPatternSingleColor(PDL_Addressable_LED::PATTERN_ORANGE_DIM_DEFAULT_INDEX);
   delay(5000);
-  led_strip.setPatternSingleColor(PDL_Addressable_LED::PATTERN_RED_FADE_ALL);
-  delay(5000);
-  led_strip.setPatternSingleColor(PDL_Addressable_LED::PATTERN_GREEN_MARQUEE_CIRCULAR);
+  led_strip.setPatternSingleColor(PDL_Addressable_LED::PATTERN_ORANGE_DIM_DEFAULT_INDEX);
   delay(5000);
 }
