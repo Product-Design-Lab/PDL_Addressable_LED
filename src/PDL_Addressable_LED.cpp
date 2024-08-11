@@ -448,7 +448,7 @@ void PDL_Addressable_LED::_patternInit(const single_color_pattern_t &pattern)
         _PatternApplyTransition(mainColor, off, midEndIndex + 1, rightMostIndex, true, true);
     }
 
-    debugPrintf("Color: %08X|%08X|%08X|%08X|%08X|%08X|%08X|%08X\n", color[0].u32, color[1].u32, color[2].u32, color[3].u32, color[4].u32, color[5].u32, color[6].u32, color[7].u32);
+    // debugPrintf("Color: %08X|%08X|%08X|%08X|%08X|%08X|%08X|%08X\n", color[0].u32, color[1].u32, color[2].u32, color[3].u32, color[4].u32, color[5].u32, color[6].u32, color[7].u32);
 
     _patternShow(0, 1.0f);
 }
@@ -465,9 +465,9 @@ void PDL_Addressable_LED::_patternShow(int left_shift_count, float fade_factor)
         uint8_t b = neoPixel.gamma8((color[running_index].channel.b * fade_factor));
         uint8_t w = neoPixel.gamma8((color[running_index].channel.w * fade_factor));
         neoPixel.setPixelColor(i, r, g, b, w);
-        debugPrintf("|%08X", neoPixel.getPixelColor(i));
+        // debugPrintf("|%08X", neoPixel.getPixelColor(i));
     }
-    debugPrintf("\n");
+    // debugPrintf("\n");
 
     neoPixel.show();
 }
