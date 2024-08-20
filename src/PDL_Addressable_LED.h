@@ -63,7 +63,6 @@ public:
     bool deinit();
 
     bool setPatternSingleColor(const single_color_pattern_t &pattern);
-    void setCenterLedIndex(uint8_t index);
 
     void setDebug(uint8_t debug);
 
@@ -75,7 +74,6 @@ private:
 
     Color color[MAX_LED_COUNT];
 
-    uint8_t center_led_index = 0;
     Adafruit_NeoPixel &neoPixel;
     single_color_pattern_t current_pattern = PATTERN_OFF;
     QueueHandle_t xQueue = NULL;

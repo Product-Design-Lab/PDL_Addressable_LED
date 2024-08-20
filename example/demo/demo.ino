@@ -8,19 +8,32 @@ Adafruit_NeoPixel strip(NUM_LED, PIN_NEOPIXEL_LED, NEO_GRB + NEO_KHZ800);
 
 PDL_Addressable_LED led_strip(strip);
 
-PDL_Addressable_LED::single_color_pattern_t patternList[] =
-    {
-        PDL_Addressable_LED::PATTERN_OFF,
-        PDL_Addressable_LED::PATTERN_RED_CONST_ALL,
-        PDL_Addressable_LED::PATTERN_GREEN_CONST_ALL,
-        PDL_Addressable_LED::PATTERN_BLUE_CONST_ALL,
-        PDL_Addressable_LED::PATTERN_RED_FADE_ALL,
-        PDL_Addressable_LED::PATTERN_GREEN_FADE_ALL,
-        PDL_Addressable_LED::PATTERN_BLUE_FADE_ALL,
-        PDL_Addressable_LED::PATTERN_RED_MARQUEE_CIRCULAR,
-        PDL_Addressable_LED::PATTERN_GREEN_MARQUEE_CIRCULAR,
-        PDL_Addressable_LED::PATTERN_BLUE_MARQUEE_CIRCULAR,
-        PDL_Addressable_LED::PATTERN_ORANGE_DIM_DEFAULT_INDEX};
+PDL_Addressable_LED::single_color_pattern_t patternList[] = {
+    PDL_Addressable_LED::PATTERN_OFF,
+    PDL_Addressable_LED::PATTERN_RED_CONST_ALL,
+    PDL_Addressable_LED::PATTERN_GREEN_CONST_ALL,
+    PDL_Addressable_LED::PATTERN_BLUE_CONST_ALL,
+    PDL_Addressable_LED::PATTERN_RED_FADE_ALL,
+    PDL_Addressable_LED::PATTERN_GREEN_FADE_ALL,
+    PDL_Addressable_LED::PATTERN_BLUE_FADE_ALL,
+    PDL_Addressable_LED::PATTERN_RED_MARQUEE_CIRCULAR,
+    PDL_Addressable_LED::PATTERN_GREEN_MARQUEE_CIRCULAR,
+    PDL_Addressable_LED::PATTERN_BLUE_MARQUEE_CIRCULAR,
+    PDL_Addressable_LED::PATTERN_ORANGE_DIM_DEFAULT_INDEX};
+
+PDL_Addressable_LED::single_color_pattern_t pat = {
+    .r = 255,
+    .g = 0,
+    .b = 0,
+    .w = 0,
+    .index = 0,
+    .count_mid = 1,
+    .count_dim_left = 1,
+    .count_dim_right = 1,
+    .fade_interval_ms = 25,
+    .fade_step = 20,
+    .marquee_interval_ms = 0,
+    .marquee_dir = 0};
 
 void setup()
 {
@@ -29,8 +42,8 @@ void setup()
     ;
   led_strip.setDebug(1);
   led_strip.init();
-  // led_strip.setPatternSingleColor(PDL_Addressable_LED::PATTERN_ORANGE_DIM_DEFAULT_INDEX);
 }
+
 void loop()
 {
   // iterate through the pattern list
@@ -40,10 +53,11 @@ void loop()
     delay(1000);
   }
 
-  led_strip.setPatternSingleColor(PDL_Addressable_LED::PATTERN_ORANGE_DIM_DEFAULT_INDEX);
-  for (int i = 0; i < NUM_LED; i++)
+  led_strip.setPatternSingleColor(pat);
+  for (int i = 0; i < 10 * NUM_LED; i++)
   {
-    led_strip.setCenterLedIndex(i);
-    delay(500);
+    pat.index = i % NUM_LED;
+    led_strip.setPatternSingleColor(pat);
+    delay(100);
   }
 }

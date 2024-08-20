@@ -166,8 +166,7 @@ PDL_Addressable_LED::PDL_Addressable_LED(Adafruit_NeoPixel &neoPixel)
       current_pattern(PATTERN_OFF),
       xQueue(nullptr),
       xTask(nullptr),
-      led_count(neoPixel.numPixels()),
-      center_led_index(0)
+      led_count(neoPixel.numPixels())
 {
 }
 
@@ -235,13 +234,6 @@ bool PDL_Addressable_LED::setPatternSingleColor(const single_color_pattern_t &pa
         return false; // Failed to post the message
     }
     return true;
-}
-
-// Set center led index
-void PDL_Addressable_LED::setCenterLedIndex(uint8_t index)
-{
-    if (index < led_count)
-        center_led_index = index;
 }
 
 // Task wrapper
@@ -323,7 +315,7 @@ void PDL_Addressable_LED::_patternLoop()
             left_shift_count = 0;
         }
 
-        _patternShow(left_shift_count + center_led_index, fade_factor);
+        _patternShow(left_shift_count, fade_factor);
 
         // Calculate wait time
         if (current_pattern.fade_interval_ms == 0 && current_pattern.marquee_interval_ms == 0)
@@ -405,12 +397,8 @@ void PDL_Addressable_LED::_patternInit(const single_color_pattern_t &pattern)
     memset(color, 0, sizeof(color));
     current_pattern = pattern;
 
-    if (pattern.index != 255)
-    {
-        center_led_index = pattern.index;
-        debugPrintf("_patternInit, pattern index = %d, set to %d\n", pattern.index, center_led_index);
-    }
 
+    uint8_t center_led_index = pattern.index % led_count;
     Color mainColor(pattern.r, pattern.g, pattern.b, pattern.w);
     Color off(0, 0, 0, 0);
     // find leftMostIndex
@@ -419,6 +407,7 @@ void PDL_Addressable_LED::_patternInit(const single_color_pattern_t &pattern)
     int midEndIndex = (center_led_index + pattern.count_mid + led_count - 1) % led_count;
     int rightMostIndex = (midEndIndex + pattern.count_dim_right + led_count) % led_count;
 
+    // TODO: implement MARQUEE BACKFORTH pattern
     // if marquee back and forth, dont wrap color to the other side
     // if (pattern.marquee_dir == static_cast<int8_t>(Marquee_t::BACKFORTH_LEFT) ||
     //     pattern.marquee_dir == static_cast<int8_t>(Marquee_t::BACKFORTH_RIGHT))
@@ -448,9 +437,15 @@ void PDL_Addressable_LED::_patternInit(const single_color_pattern_t &pattern)
         _PatternApplyTransition(mainColor, off, midEndIndex + 1, rightMostIndex, true, true);
     }
 
-    // debugPrintf("Color: %08X|%08X|%08X|%08X|%08X|%08X|%08X|%08X\n", color[0].u32, color[1].u32, color[2].u32, color[3].u32, color[4].u32, color[5].u32, color[6].u32, color[7].u32);
+    
+    for(int i = 0; i < led_count; i++)
+    {
+        debugPrintf("|%08X", color[i].u32);
+    }
+    debugPrintf("\n");
+    
 
-    _patternShow(0, 1.0f);
+    // _patternShow(0, 1.0f);
 }
 
 // Display pattern with shift and fade effects
